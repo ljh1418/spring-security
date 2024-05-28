@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.security1.model.User;
 
+import lombok.Data;
+
 // 시큐리티가 /login 주소 요청이 오면 낚아채서 로그인을 진행
 // 로그인 진행이 완료가 되면 시큐리티 session을 만들어줌 Security ContextHolder
 // 오브젝트 타입 -> Authentication 타입 객체
@@ -15,6 +17,7 @@ import com.example.security1.model.User;
 // User오브젝트 타입 -> UserDetails 타입 객체
 // Security Session -> Authentication -> UserDetails(PrincipalDetails) 
 
+@Data
 public class PrincipalDetails implements UserDetails{
 	
 	private User user;
