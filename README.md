@@ -1,5 +1,5 @@
 Spring Security
-
+스프링부트 2버전
 
 
 2024-06-07
@@ -32,5 +32,6 @@ private BCryptPasswordEncoder bCryptPasswordEncoder;
 ![image](https://github.com/ljh1418/spring-security/assets/66236648/ecdb11aa-7ef6-4677-a5f4-a566df356b34)
 
 ![image](https://github.com/ljh1418/spring-security/assets/66236648/590f2e28-c851-49d7-96c9-901a40497ed6)
+
 서비스URL : 적용할 url 주소
 네이버 로그인Callback URL : application.yml 파일의 security.oauth2.client.registration.naver.redirect-uri 입력한 주소 작성
