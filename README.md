@@ -16,10 +16,22 @@ Spring Security
 @Lazy 어노테이션을 사용하여 필요한 빈을 지연 초기화(Lazy Initialization)할 수 있습니다. 이렇게 하면 빈이 실제로 필요할 때까지 빈의 초기화를 지연시켜 순환 의존성을 피할 수 있습니다.
 
 
-public class SecurityConfig{
+@Configuration
+public class SecurityConfig {
 
-	@Autowired
-	@Lazy
-	private PrincipalOauth2UserService principalOauth2UserService;
- 
+    @Autowired
+    @Lazy
+    private PrincipalOauth2UserService principalOauth2UserService;
+
+    // Other configuration code
+}
+
+@Service
+public class PrincipalOauth2UserService {
+
+    @Autowired
+    @Lazy
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    // Other service code
 }
