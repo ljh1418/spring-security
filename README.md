@@ -28,4 +28,5 @@ private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
 네이버 로그인
+
 ![image](https://github.com/ljh1418/spring-security/assets/66236648/ecdb11aa-7ef6-4677-a5f4-a566df356b34)
