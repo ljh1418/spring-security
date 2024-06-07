@@ -17,7 +17,9 @@ Spring Security
 
 
 public class SecurityConfig{
+
 	@Autowired
 	@Lazy
 	private PrincipalOauth2UserService principalOauth2UserService;
+ 
 }
