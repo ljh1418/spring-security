@@ -3,9 +3,7 @@ package com.example.security1.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,123 +16,80 @@ import com.example.security1.config.auth.oauth.PrincipalOauth2UserService;
 // prefix:앞, suffix:뒤
 // Authentication:인증 -> 유저가 누구인지 확인하는 절차
 // Authorization:인가 -> 권한이 있는 유저저인지 확인하는 절차
-// OAuth:Open Authorization -> 외부 서비으세도 인증을 가능하게 하는 서비스 ex)네이버 로그인
+// OAuth:Open Authorization -> 외부 서비으세도 인증을 가능하게 하는 서비스 ex)구글, 네이버 로그인
+
 @Configuration
-//securedEnabled : secured 어노테이션 활성화 -> IndexController info 메소드에 작성, prePostEnabled : PreAuthorize,PostAuthorize 어노테이션 활성화 -> 특정한 url 권한을 걸어야 할 때
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) 
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)//securedEnabled : secured 어노테이션 활성화 -> IndexController info 메소드에 작성, prePostEnabled : PreAuthorize,PostAuthorize 어노테이션 활성화 -> 특정한 url 권한을 걸어야 할 때 
 public class SecurityConfig{
 	
 	@Autowired
+	@Lazy
 	private PrincipalOauth2UserService principalOauth2UserService;
 	
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // 인가(접근권한) 설정
-    
-    /*
-    http
-    	.authorizeRequests()
-    		.antMatchers("/admin/**").hasRole("ADMIN")  // ADMIN 권한을 가진 사용자만 접근 가능
-    		.antMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
-    		.antMatchers("/user").authenticated()
-    		.antMatchers("/").permitAll()
-		.and()
-		.formLogin()
-			.loginPage("/loginForm")
-			.loginProcessingUrl("/login")
-			.defaultSuccessUrl("/")
-			.usernameParameter("username")
-			.permitAll()
-		.and()
-		.logout()
-			.permitAll();
-    */
-
-    http
-    	.csrf().disable()
-    	.authorizeHttpRequests()
-    		.antMatchers("/").permitAll()
-    		.antMatchers("/user").authenticated()
-    		.antMatchers("/admin/**").hasRole("ADMIN")
-    		.antMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
-    	.and()
-    		.formLogin()
-    			.loginPage("/loginForm")
-    			.loginProcessingUrl("/login") // login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행
-    			.defaultSuccessUrl("/") // 성공시 url 호출 -> 하지만 특정페이지 ex)/user url 요청하면 로그인 성공시 /user 페이지 호출
-    			.usernameParameter("username") // PrincipalDetailsService 클래스의 loadUserByUsername 메서드 파라미값 명 설정
-	    .and()
-	    	.oauth2Login()
-	    		.loginPage("/loginForm")
-	    		.userInfoEndpoint()
-	    		.userService(principalOauth2UserService);
-	    		// 구글 로그인이 완료된 뒤의 후처리가 필요 -> 엑세스토큰 + 사용자프로필정보 받음
-	    		
-	    		//카카오 로그인
-	    		// 1. 코드받기(인증) 
-	    		// 2. 엑세스토큰(권한) 
-	    		// 3. 사용자 프로필정보 가져옴 
-	    		// 4. 그 정보를 토대로 회원가입을 자동으로 진행 
-	    		
-	    		
-    	    ;
-    
-   
-    /*
-    //모든 링크(사용자)에 대해 허용을 해 준 상태, 권한관리필터)	
-    http.authorizeHttpRequests().antMatchers("/").permitAll(); 
-    
-    //authenticated() -> 인증된 사용자만
-    http.authorizeHttpRequests().antMatchers("/user").authenticated();
-    
-    // admin 하위의 모든 자원 -> "ADMIN"에게 부여 -> hasRole("ADMIN") ADMIN 권한을 가진 사용자만 접근 가능
-    http.authorizeHttpRequests().antMatchers("/admin/**").hasRole("ADMIN");
-    
-    // manager 하위의 모든 자원 -> "ADMIN", "MANAGER" 에게 부여 -> hasAnyRole("ADMIN", "MANAGER") 주어진 권한중 하나라도 갖고있는지 확인
-    http.authorizeHttpRequests().antMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER"); 
-    
-    // 사이트 위변조 요청 방지
-    http.csrf().disable();
-    
-    // 로그인 설정
-    http.formLogin()
-    .loginPage("/loginForm")
-    .loginProcessingUrl("/login") // login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행
-    .defaultSuccessUrl("/") // 성공시 url 호출 -> 하지만 특정페이지 ex)/user url 요청하면 로그인 성공시 /user 페이지 호출
-    .usernameParameter("username"); // PrincipalDetailsService 클래스의 loadUserByUsername 메서드 파라미값 명 설정
-	*/	
-		
-		
-		
-		
-//    // 사이트 위변조 요청 방지
-//    http.csrf().disable();
-//
-//    // 로그인 설정
-//    http.formLogin()
-//    .loginPage("/user2/login")
-//    .defaultSuccessUrl("/user2/loginSuccess")
-//    .failureUrl("/user2/login?success=100)")
-//    .usernameParameter("uid")
-//    .passwordParameter("pass");
-//		
-//    // 로그아웃 설정
-//    http.logout()
-//    .invalidateHttpSession(true)
-//    .logoutRequestMatcher(new AntPathRequestMatcher("/user2/logout"))
-//    .logoutSuccessUrl("/user2/login?success=200");
-//
-//    // 사용자 인증 처리 컴포넌트 서비스 등록
-//    http.userDetailsService(service);
-    return http.build();
-    
-    }
-    
     //해당 메서드의 리턴되는 오브젝트를 IoC로 등록
     @Bean
     public BCryptPasswordEncoder PasswordEncoder () {
-    	//return new MessageDigestPasswordEncoder("SHA-256");
     	return new BCryptPasswordEncoder();
     }
+    
+    
+    //WebSecurityConfigurerAdapter 사용 x -> Spring Security 5.4부터는 더이상 사용권장 하지 않음 
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    	// http 접근 권한 설정
+    	// authorizeRequests() : HttpServletRequest 요청 URL에 따라 접근 권한을 설정합니다.
+    	// antMatchers : 요청 URL 경로 패턴을 지정합니다.
+    	// authenticated : 인증된 유저만 접근을 허용합니다.
+    	// hasRole, hasAnyRole : 특정 권한을 가지는 사용자만 접근할 수 있습니다.
+    	// permitAll() : 모든 유저에게 접근을 허용합니다.
+    	
+    	// http 로그인 설정
+    	// formLogin() : 로그인 설정을 진행 합니다.
+    	// loginPage() : 커스텀 로그인 페이지 경로 
+    	// loginProcessingUrl() : 로그인 요청을 처리할 url 지정 스프링 시큐리티는 /login url사용
+    	
+    	//스프링시큐리티 동작방식
+//    	<form action="/login" method="post">
+//        <input type="text" name="username" placeholder="Username">
+//        <input type="password" name="password" placeholder="Password">
+//        <button type="submit">Login</button>
+//        </form>
+    	
+    	// AuthenticationFilter 
+    	// UsernamePasswordAuthenticationFilter 클래스 -> /login, post 요청이면
+    	// username, password 파라미터 읽음
+    	// AuthenticationManager 호출 
+    	// AuthenticationManager -> ProviderManager 상속
+    	// ProviderManager -> public Authentication authenticate(Authentication authentication) throws AuthenticationException {|
+    	
+    	
+    	// defaultSuccessUrl() : 로그인 성공 이후 리다이렉트 url
+    	// usernameParameter() : 로그인 폼에서 사용자 이름을 받을 파라미터명 지정
+    	
+    	
+	    http
+	    	.csrf().disable() // disable 비활성화
+	    	.authorizeHttpRequests() 
+	    		.antMatchers("/").permitAll() //antMatchers
+	    		.antMatchers("/user").authenticated()
+	    		.antMatchers("/admin/**").hasRole("ADMIN")
+	    		.antMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
+	    	.and()
+	    		.formLogin()
+	    			.loginPage("/loginForm")
+	    			.loginProcessingUrl("/login") // login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행
+	    			.defaultSuccessUrl("/") // 성공시 url 호출 -> 하지만 특정페이지 ex)/user url 요청하면 로그인 성공시 /user 페이지 호출
+	    			.usernameParameter("username") // loginForm name명 일치해야함
+		    .and()
+		    	.oauth2Login()
+		    		.loginPage("/loginForm")
+		    		.userInfoEndpoint()
+		    		.userService(principalOauth2UserService); // 구글 로그인이 완료된 뒤의 후처리가 필요 -> 엑세스토큰 + 사용자프로필정보 받음
+	    return http.build();
+    
+    }
+    
+
     
 }
